@@ -42,19 +42,36 @@ export const Videoplayer = () => {
       carouselRef.current.slidePrev();
     }
   };
+  const playpausevideo = () => {
+    console.log(reactPlayerRef?.current.player );
+   const player = reactPlayerRef.current?.player;
+  if (player) {
+    if (player.isPlaying) {
+      player.player.player.pauseVideo();
+    } else {
+      player.player.player.playVideo();
+    }
+  }
+  };
+ 
   useEffect(() => {
-    console.log(document?.querySelector(".playerr"));
-    setTimeout(() => {
+       setTimeout(() => {
       document
         ?.querySelector(".playerr")
         ?.addEventListener("wheel", handleWheel);
-      console.log(width, document?.querySelector(".playerr"));
+        document
+        ?.querySelector(".playerr")
+        .addEventListener("click", playpausevideo);
+      console.log(reactPlayerRef?.current?.player.player.player);
     }, 200);
 
     return () => {
       document
         ?.querySelector(".playerr")
         ?.removeEventListener("wheel", handleWheel);
+        document
+        ?.querySelector(".playerr")
+        ?.removeEventListener("click", playpausevideo);
     };
   }, [currentVideoIndex]);
 
