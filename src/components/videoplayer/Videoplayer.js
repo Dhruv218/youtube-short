@@ -3,7 +3,6 @@ import { data } from "../../assests/data/data";
 import "./Videoplayer.css";
 import ReactPlayer from "react-player";
 
-
 import Carousel from "react-elastic-carousel";
 import { Icons } from "../sidecomponent/Icons";
 
@@ -13,7 +12,7 @@ export const Videoplayer = () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
   const [flag, setFlag] = useState([0, 0, 0]);
- 
+
   const handleLike = () => {
     setFlag([flag[0] === 1 ? 0 : 1, 0, flag[2]]);
   };
@@ -26,20 +25,48 @@ export const Videoplayer = () => {
     setFlag([flag[0], flag[1], flag[2] === 1 ? 0 : 1]);
   };
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-
+  const carouselRef = useRef(null);
+  const reactPlayerRef = useRef(null);
   const handleSlideChange = (currentItem) => {
-    setFlag([0,0,0])
+    setFlag([0, 0, 0]);
     setCurrentVideoIndex(currentItem.index);
   };
+
+  const handleWheel = (event) => {
+    // Check if the wheel event occurred on the video element
+
+    // Call the swiping function of the carousel
+    if (event.deltaY > 0) {
+      carouselRef.current.slideNext();
+    } else {
+      carouselRef.current.slidePrev();
+    }
+  };
+  useEffect(() => {
+    console.log(document?.querySelector(".playerr"));
+    setTimeout(() => {
+      document
+        ?.querySelector(".playerr")
+        ?.addEventListener("wheel", handleWheel);
+      console.log(width, document?.querySelector(".playerr"));
+    }, 200);
+
+    return () => {
+      document
+        ?.querySelector(".playerr")
+        ?.removeEventListener("wheel", handleWheel);
+    };
+  }, [currentVideoIndex]);
 
   return (
     <div className={`${width < 532 ? "" : "mx-[10%]"}`}>
       <Carousel
         verticalMode
-         pagination={false}
+        pagination={false}
         showArrows={width < 532 ? false : true}
         enableSwipe={true}
         enableMouseSwipe={true}
+        ref={carouselRef}
         onNextEnd={handleSlideChange}
         onPrevEnd={handleSlideChange}
       >
@@ -47,18 +74,25 @@ export const Videoplayer = () => {
           sourceData?.map((item, index) => {
             return (
               <div
-                className="relative h-[100vh] flex items-center justify-center"
+                className={`relative h-[100vh] m-4 flex items-center justify-center ${
+                  index === currentVideoIndex ? "parent" : ""
+                }`}
                 key={item.id}
               >
                 {index === currentVideoIndex && (
+                  <div className="playerr absolute h-full w-full left-0 right-0 top-0 bottom-0"></div>
+                )}
+                {index === currentVideoIndex && (
                   <ReactPlayer
+                    ref={reactPlayerRef}
                     url={item.src}
                     height={width < 532 ? "100vh" : "90vh"}
                     width={width < 532 ? "95vw" : "532px"}
                     playing
                   />
                 )}
-                <Icons width={width}
+                <Icons
+                  width={width}
                   handleComment={handleComment}
                   handleDislike={handleDislike}
                   handleLike={handleLike}
