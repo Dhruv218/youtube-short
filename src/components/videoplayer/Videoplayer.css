@@ -1,0 +1,17 @@
+@media screen and (max-width: 600px) {
+  .bottom-onmobile {
+    right: 12px !important;
+  }
+  .bottom-onmobile-c {
+    right: -3px !important;
+  }
+}
+
+.custom-focus-color {
+  outline-color: #ff0000; /* Change this to your desired focus color */
+}
+
+/* Apply the custom focus color to the carousel arrows */
+.react-carousel .rec-arrow:focus {
+  outline-color: #ff0000; /* Change this to your desired focus color */
+}
